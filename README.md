@@ -78,9 +78,5 @@ Thats it.
 <img width="952" height="416" alt="image" src="https://github.com/user-attachments/assets/cb36ce0d-a19f-4a5d-a877-11e21b51a900" />
 <img width="948" height="434" alt="image" src="https://github.com/user-attachments/assets/9477bcd4-4c53-4d16-9bdd-078a50bed04a" />
 <img width="956" height="440" alt="image" src="https://github.com/user-attachments/assets/a1fae79f-d1da-43be-ac64-ce52e36e4db2" />
-
-
-
-
-
+<img width="956" height="403" alt="image" src="https://github.com/user-attachments/assets/64d1c6d1-6faa-4822-b0c5-b631e1859152" />
 Made by Rishi for learning purpose. Still learning JS so code is not perfect.
