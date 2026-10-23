@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rishi OS</title>
+    
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Orbitron:wght@400;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            overflow: hidden; 
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .Landing-Screen {
+           width: 100vw;
+           height: 100vh;
+           background-image: url('Avengers.jpg');
+           background-size: cover;
+           background-repeat: no-repeat;
+           background-position: center;
+           position: relative;
+           box-sizing: border-box;
+           padding: 40px;
+        }
+
+        .desktop {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            grid-gap: 15px;
+            width: 100%;
+            height: calc(100% - 100px);
+            align-content: start;
+            margin-top: 20px;
+        }
+
+        .desktop button, .appIcon {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 8px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease-in-out;
+            font-family: inherit;
+        }
+
+        .desktop button:hover, .appIcon:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+        }
+
+        .desktop button img, .appIcon img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            margin-bottom: 6px;
+        }
+
+        .desktop button span, .appIcon span {
+            font-size: 10px;
+            text-align: center;
+            font-weight: 400;
+        }
+
+        .app-badge {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1px 4px;
+            border-radius: 3px;
+            margin-top: 2px;
+            font-size: 8px !important;
+            color: #ccc;
+        }
+
+        .full-page {
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center; 
+            align-items: center; 
+            animation: fadeout 5s ease-in-out forwards;    
+            z-index: 9999; 
+            pointer-events: none;
+        }
+
+        .full-page h1 {
+            color: white;
+            font-weight: 800;
+            font-size: 80px;
+            margin: 0;               
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .status-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none; 
+            z-index: 50;
+        }
+
+        .status-container h2 {
+            font-family: 'Orbitron', sans-serif;
+            margin: 0;
+            font-weight: 800;
+            font-size: 40px;
+            color: white;
+            text-align: center;
+            animation: fadeouth2 8s ease-in-out forwards;
+        }
+
+        @keyframes fadeout {
+            0% { visibility: visible; opacity: 1; }
+            99% { visibility: visible; opacity: 0; }
+            100% { visibility: hidden; opacity: 0; }
+        }
+
+        @keyframes fadeouth2 {
+            0% { visibility: visible; opacity: 1; }
+            70% { opacity: 1; }
+            99% { visibility: visible; opacity: 0; }
+            100% { visibility: hidden; opacity: 0; }
+        }
+
+        .os-window {
+            display: none; 
+            position: absolute;
+            top: 120px;
+            left: 120px;
+            width: 450px;
+            height: 550px;
+            background: #1e1e24;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 100;
+            flex-direction: column;
+            overflow: hidden;
+            transition: width 0.2s ease, height 0.2s ease, top 0.2s ease, left 0.2s ease;
+        }
+
+        .titlebar {
+            background: #2b2b36;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .win-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .win-btns button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 5px;
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        .win-btns button.close:hover {
+            color: #ff5f56;
+        }
+
+        .os-window iframe {
+            width: 100%;
+            flex: 1;
+            border: none;
+            background: white;
+        }
+
+        /* --- WINDOWS TASKBAR STYLES --- */
+        .taskbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 48px;
+            background: rgba(20, 20, 28, 0.85);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 12px;
+            box-sizing: border-box;
+            z-index: 10000;
+            user-select: none;
+        }
+
+        .taskbar-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .start-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #00d2ff;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 800;
+            font-size: 14px;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .start-btn:hover {
+            background: rgba(0, 210, 255, 0.25);
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
+        }
+
+        .taskbar-apps {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: 10px;
+        }
+
+        .taskbar-app-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            transition: background 0.2s ease;
+        }
+
+        .taskbar-app-icon:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .taskbar-app-icon img {
+            width: 22px;
+            height: 22px;
+            object-fit: contain;
+        }
+
+        .taskbar-right {
+            display: flex;
+            align-items: center;
+            color: white;
+            font-size: 11px;
+            padding-right: 8px;
+        }
+
+        .system-clock {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .system-clock:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .clock-time {
+            font-weight: 800;
+        }
+
+        .clock-date {
+            font-size: 9px;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="full-page">
+        <h1>Rishi OS</h1>
+    </div>
+
+    <div class="Landing-Screen">
+        
+        <div class="status-container">
+            <h2>Desktop Loaded Successfully.....</h2>
+        </div>
+
+        <div class="desktop">
+            <button class="appIcon" onclick="openApp('Calculator', 'calculater.html')">
+                <img src="calculater.png" alt="Calculator">
+                <span class="OpenCalculater">Rishi Calculator</span>
+            </button>
+
+            <button class="appIcon" id="stopwatch-icon" title="Stopwatch" onclick="openApp('Stopwatch', 'stopwatch.html')">
+                <img src="stopwatch.png" alt="Stopwatch">
+                <span class="app-badge">Rishi Stopwatch</span>
+            </button>
+
+            <button class="appIcon" id="calendar-icon" title="Calendar" onclick="openApp('Calendar', 'calendar.html')">
+                <img src="calendar.png" alt="Calendar">
+                <span class="app-badge">Rishi Calendar</span>
+            </button>
+
+            <button class="appIcon" id="timer-icon" title="Timer" onclick="openApp('Timer', 'timer.html')">
+                <img src="timer.png" alt="Timer">
+                <span class="app-badge">Rishi Timer</span>
+            </button>
+
+            <button class="appIcon" id="todo-icon" title="Todo App" onclick="openApp('Todo App', 'Todo.html')">
+                <img src="todo.png" alt="Todo App">
+                <span class="app-badge">Rishi Todo</span>
+            </button>
+
+            <button class="appIcon" id="notepad-icon" title="Notepad" onclick="openApp('Notepad', 'notepad.html')">
+                <img src="Notepad Icon.png" alt="Notepad">
+                <span class="app-badge">Rishi Notepad</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="os-window" id="calc-window">
+        <div class="titlebar" id="calc-titlebar">
+            <span id="window-title">Calculator</span>
+            <div class="win-btns">
+                <button class="win-btn" id="calc-min" title="Minimize" onclick="minimizeApp()">—</button>
+                <button class="win-btn" id="calc-max" title="Maximize" onclick="maximizeApp()">□</button>
+                <button class="win-btn close" id="calc-close" title="Close" onclick="closeApp()">✕</button>
+            </div>
+        </div>
+        <iframe id="calc-frame" title="Application Window"></iframe>
+    </div>
+
+    <!-- WINDOWS BOTTOM TASKBAR -->
+    <div class="taskbar">
+        <div class="taskbar-left">
+            <button class="start-btn">
+                ❖ Start
+            </button>
+            <div class="taskbar-apps">
+                <button class="taskbar-app-icon" title="Rishi Calculator" onclick="openApp('Calculator', 'calculater.html')">
+                    <img src="calculater.png" alt="Calculator">
+                </button>
+                <button class="taskbar-app-icon" title="Rishi Stopwatch" onclick="openApp('Stopwatch', 'stopwatch.html')">
+                    <img src="stopwatch.png" alt="Stopwatch">
+                </button>
+                <button class="taskbar-app-icon" title="Rishi Calendar" onclick="openApp('Calendar', 'calendar.html')">
+                    <img src="calendar.png" alt="Calendar">
+                </button>
+                <button class="taskbar-app-icon" title="Rishi Timer" onclick="openApp('Timer', 'timer.html')">
+                    <img src="timer.png" alt="Timer">
+                </button>
+                <button class="taskbar-app-icon" title="Rishi Todo" onclick="openApp('Todo App', 'Todo.html')">
+                    <img src="todo.png" alt="Todo App">
+                </button>
+                <button class="taskbar-app-icon" title="Rishi Notepad" onclick="openApp('Notepad', 'notepad.html')">
+                    <img src="Notepad Icon.png" alt="Notepad">
+                </button>
+            </div>
+        </div>
+        <div class="taskbar-right">
+            <div class="system-clock">
+                <span class="clock-time" id="taskbar-time">12:00 PM</span>
+                <span class="clock-date" id="taskbar-date">10/22/2026</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="draggable.js"></script>
+    <script src="windows-manager.js"></script>
+
+    <script>
+        let isMaximized = false;
+        let originalCoords = { top: '120px', left: '120px', width: '450px', height: '550px' };
+
+        function openApp(appName, appUrl) {
+            const win = document.getElementById('calc-window');
+            const frame = document.getElementById('calc-frame');
+            const title = document.getElementById('window-title');
+            
+            title.innerText = appName;
+            frame.src = appUrl;
+            win.style.display = 'flex';
+        }
+
+        function closeApp() {
+            const win = document.getElementById('calc-window');
+            const frame = document.getElementById('calc-frame');
+            
+            win.style.display = 'none';
+            frame.src = ''; 
+        }
+
+        function maximizeApp() {
+            const win = document.getElementById('calc-window');
+            if (!isMaximized) {
+                originalCoords.top = win.style.top;
+                originalCoords.left = win.style.left;
+                originalCoords.width = win.style.width;
+                originalCoords.height = win.style.height;
+
+                win.style.top = '0px';
+                win.style.left = '0px';
+                win.style.width = '100vw';
+                win.style.height = 'calc(100vh - 48px)';
+                isMaximized = true;
+            } else {
+                win.style.top = originalCoords.top || '120px';
+                win.style.left = originalCoords.left || '120px';
+                win.style.width = originalCoords.width || '450px';
+                win.style.height = originalCoords.height || '550px';
+                isMaximized = false;
+            }
+        }
+
+        function minimizeApp() {
+            const win = document.getElementById('calc-window');
+            win.style.display = 'none';
+        }
+
+       
+        function updateTaskbarClock() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const dateStr = now.toLocaleDateString();
+            
+            document.getElementById('taskbar-time').innerText = timeStr;
+            document.getElementById('taskbar-date').innerText = dateStr;
+        }
+
+        setInterval(updateTaskbarClock, 1000);
+        updateTaskbarClock();
+    </script>
+</body>
+</html>
