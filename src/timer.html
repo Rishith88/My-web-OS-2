@@ -16,6 +16,10 @@
         }
         h1{
             font-size: 80px;
+            background: linear-gradient(45deg,white,black);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
          
         .count {
@@ -85,7 +89,7 @@
     </div>
 
     <script>
-        // Changed to 'let' so it can be updated when a new time is set
+        
         let INITIAL_TIME = 600; 
         let timeLeft = INITIAL_TIME;
         let timerId = null;
@@ -97,7 +101,7 @@
         const timeInput = document.getElementById('time-input');
         const setTimeBtn = document.getElementById('set-time-btn');
 
-        // Function to format seconds into MM:SS format
+        
         function updateDisplay() {
             const minutes = Math.floor(timeLeft / 60);
             const seconds = timeLeft % 60;
