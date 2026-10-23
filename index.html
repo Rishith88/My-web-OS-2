@@ -5,17 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rishi OS</title>
     
-    <link rel="preconnect" href="https://googleapis.com">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=Orbitron:wght@400;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
     
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             padding: 0;
             background-color: black;
             overflow: hidden; 
             font-family: 'Orbitron', sans-serif;
+            user-select: none;
         }
         
         .Landing-Screen {
@@ -32,8 +37,8 @@
 
         .desktop {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            grid-gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            grid-gap: 20px;
             width: 100%;
             height: calc(100% - 100px);
             align-content: start;
@@ -42,10 +47,10 @@
 
         .desktop button, .appIcon {
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            padding: 8px;
+            border-radius: 12px;
+            padding: 10px 8px;
             color: white;
             cursor: pointer;
             display: flex;
@@ -59,11 +64,12 @@
         .desktop button:hover, .appIcon:hover {
             background: rgba(255, 255, 255, 0.25);
             transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
         }
 
         .desktop button img, .appIcon img {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             object-fit: contain;
             margin-bottom: 6px;
         }
@@ -72,15 +78,17 @@
             font-size: 10px;
             text-align: center;
             font-weight: 400;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
 
         .app-badge {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 1px 4px;
-            border-radius: 3px;
-            margin-top: 2px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-top: 4px;
             font-size: 8px !important;
-            color: #ccc;
+            color: #00d2ff;
+            border: 1px solid rgba(0, 210, 255, 0.3);
         }
 
         .full-page {
@@ -94,7 +102,7 @@
             justify-content: center; 
             align-items: center; 
             animation: fadeout 5s ease-in-out forwards;    
-            z-index: 9999; 
+            z-index: 99999; 
             pointer-events: none;
         }
 
@@ -105,6 +113,7 @@
             margin: 0;               
             text-align: center;
             font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 20px #00d2ff;
         }
 
         .status-container {
@@ -124,6 +133,7 @@
             color: white;
             text-align: center;
             animation: fadeouth2 8s ease-in-out forwards;
+            text-shadow: 0 0 15px rgba(0,0,0,0.9);
         }
 
         @keyframes fadeout {
@@ -139,20 +149,47 @@
             100% { visibility: hidden; opacity: 0; }
         }
 
-        .os-window {
-            display: none; 
+        /* --- MULTI WINDOW SYSTEM STYLES --- */
+        #window-container {
             position: absolute;
-            top: 120px;
-            left: 120px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 48px);
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .os-window {
+            pointer-events: auto;
+            position: absolute;
             width: 450px;
             height: 550px;
             background: #1e1e24;
+            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            display: flex;
             flex-direction: column;
             overflow: hidden;
             transition: width 0.2s ease, height 0.2s ease, top 0.2s ease, left 0.2s ease;
+        }
+
+        .os-window.active-window {
+            border-color: #00d2ff;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.3), 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .os-window.maximized {
+            top: 0px !important;
+            left: 0px !important;
+            width: 100vw !important;
+            height: calc(100vh - 48px) !important;
+            border-radius: 0;
+        }
+
+        .os-window.minimized {
+            display: none !important;
         }
 
         .titlebar {
@@ -163,6 +200,13 @@
             justify-content: space-between;
             align-items: center;
             user-select: none;
+            cursor: move;
+        }
+
+        .titlebar span {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
         .win-btns {
@@ -178,6 +222,11 @@
             padding: 5px;
             font-size: 14px;
             line-height: 1;
+            transition: color 0.2s ease;
+        }
+
+        .win-btns button:hover {
+            color: #00d2ff;
         }
 
         .win-btns button.close:hover {
@@ -255,10 +304,26 @@
             background: transparent;
             border: none;
             transition: background 0.2s ease;
+            position: relative;
         }
 
         .taskbar-app-icon:hover {
             background: rgba(255, 255, 255, 0.15);
+        }
+
+        .taskbar-app-icon.active {
+            background: rgba(0, 210, 255, 0.2);
+        }
+
+        .taskbar-app-icon.active::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            width: 16px;
+            height: 3px;
+            background: #00d2ff;
+            border-radius: 2px;
+            box-shadow: 0 0 5px #00d2ff;
         }
 
         .taskbar-app-icon img {
@@ -312,48 +377,39 @@
 
         <div class="desktop">
             <button class="appIcon" onclick="openApp('Calculator', 'src/calculater.html')">
-                <img src="Images/calculater.png" alt="Calculator">
+                <img src="Images/calculater.png" alt="Calculator" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1011/1011863.png'">
                 <span class="OpenCalculater">Rishi Calculator</span>
             </button>
 
             <button class="appIcon" id="stopwatch-icon" title="Stopwatch" onclick="openApp('Stopwatch', 'src/stopwatch.html')">
-                <img src="Images/stopwatch.png" alt="Stopwatch">
+                <img src="Images/stopwatch.png" alt="Stopwatch" onerror="this.src='https://cdn-icons-png.flaticon.com/512/865/865969.png'">
                 <span class="app-badge">Rishi Stopwatch</span>
             </button>
 
             <button class="appIcon" id="calendar-icon" title="Calendar" onclick="openApp('Calendar', 'src/calendar.html')">
-                <img src="Images/calendar.png" alt="Calendar">
+                <img src="Images/calendar.png" alt="Calendar" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2693/2693507.png'">
                 <span class="app-badge">Rishi Calendar</span>
             </button>
 
             <button class="appIcon" id="timer-icon" title="Timer" onclick="openApp('Timer', 'src/timer.html')">
-                <img src="Images/timer.png" alt="Timer">
+                <img src="Images/timer.png" alt="Timer" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3208/3208728.png'">
                 <span class="app-badge">Rishi Timer</span>
             </button>
 
             <button class="appIcon" id="todo-icon" title="Todo App" onclick="openApp('Todo App', 'src/Todo.html')">
-                <img src="Images/Todo.png" alt="Todo App">
+                <img src="Images/Todo.png" alt="Todo App" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2387/2387679.png'">
                 <span class="app-badge">Rishi Todo</span>
             </button>
 
             <button class="appIcon" id="notepad-icon" title="Notepad" onclick="openApp('Notepad', 'src/notepad.html')">
-                <img src="Images/Notepad Icon.png" alt="Notepad">
+                <img src="Images/Notepad Icon.png" alt="Notepad" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3701/3701509.png'">
                 <span class="app-badge">Rishi Notepad</span>
             </button>
         </div>
     </div>
 
-    <div class="os-window" id="calc-window">
-        <div class="titlebar" id="calc-titlebar">
-            <span id="window-title">Calculator</span>
-            <div class="win-btns">
-                <button class="win-btn" id="calc-min" title="Minimize" onclick="minimizeApp()">—</button>
-                <button class="win-btn" id="calc-max" title="Maximize" onclick="maximizeApp()">□</button>
-                <button class="win-btn close" id="calc-close" title="Close" onclick="closeApp()">✕</button>
-            </div>
-        </div>
-        <iframe id="calc-frame" title="Application Window"></iframe>
-    </div>
+    
+    <div id="window-container"></div>
 
     
     <div class="taskbar">
@@ -362,23 +418,23 @@
                  Start
             </button>
             <div class="taskbar-apps">
-                <button class="taskbar-app-icon" title="Rishi Calculator" onclick="openApp('Calculator', 'src/calculater.html')">
-                    <img src="Images/calculater.png" alt="Calculator">
+                <button class="taskbar-app-icon" id="tb-calculator" title="Rishi Calculator" onclick="openApp('Calculator', 'src/calculater.html')">
+                    <img src="Images/calculater.png" alt="Calculator" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1011/1011863.png'">
                 </button>
-                <button class="taskbar-app-icon" title="Rishi Stopwatch" onclick="openApp('Stopwatch', 'src/stopwatch.html')">
-                    <img src="Images/stopwatch.png" alt="Stopwatch">
+                <button class="taskbar-app-icon" id="tb-stopwatch" title="Rishi Stopwatch" onclick="openApp('Stopwatch', 'src/stopwatch.html')">
+                    <img src="Images/stopwatch.png" alt="Stopwatch" onerror="this.src='https://cdn-icons-png.flaticon.com/512/865/865969.png'">
                 </button>
-                <button class="taskbar-app-icon" title="Rishi Calendar" onclick="openApp('Calendar', 'src/calendar.html')">
-                    <img src="Images/calendar.png" alt="Calendar">
+                <button class="taskbar-app-icon" id="tb-calendar" title="Rishi Calendar" onclick="openApp('Calendar', 'src/calendar.html')">
+                    <img src="Images/calendar.png" alt="Calendar" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2693/2693507.png'">
                 </button>
-                <button class="taskbar-app-icon" title="Rishi Timer" onclick="openApp('Timer', 'src/timer.html')">
-                    <img src="Images/timer.png" alt="Timer">
+                <button class="taskbar-app-icon" id="tb-timer" title="Rishi Timer" onclick="openApp('Timer', 'src/timer.html')">
+                    <img src="Images/timer.png" alt="Timer" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3208/3208728.png'">
                 </button>
-                <button class="taskbar-app-icon" title="Rishi Todo" onclick="openApp('Todo App', 'src/Todo.html')">
-                    <img src="Images/Todo.png" alt="Todo App">
+                <button class="taskbar-app-icon" id="tb-todo-app" title="Rishi Todo" onclick="openApp('Todo App', 'src/Todo.html')">
+                    <img src="Images/Todo.png" alt="Todo App" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2387/2387679.png'">
                 </button>
-                <button class="taskbar-app-icon" title="Rishi Notepad" onclick="openApp('Notepad', 'src/notepad.html')">
-                    <img src="Images/Notepad Icon.png" alt="Notepad">
+                <button class="taskbar-app-icon" id="tb-notepad" title="Rishi Notepad" onclick="openApp('Notepad', 'src/notepad.html')">
+                    <img src="Images/Notepad Icon.png" alt="Notepad" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3701/3701509.png'">
                 </button>
             </div>
         </div>
@@ -390,59 +446,171 @@
         </div>
     </div>
 
-    <script src="draggable.js"></script>
-    <script src="windows-manager.js"></script>
-
     <script>
-        let isMaximized = false;
-        let originalCoords = { top: '120px', left: '120px', width: '450px', height: '550px' };
+        let highestZIndex = 100;
+        const windowStates = {};
+        let windowCascadeOffset = 0;
+
+        function getAppId(appName) {
+            return 'win-' + appName.replace(/\s+/g, '-').toLowerCase();
+        }
 
         function openApp(appName, appUrl) {
-            const win = document.getElementById('calc-window');
-            const frame = document.getElementById('calc-frame');
-            const title = document.getElementById('window-title');
+            const windowId = getAppId(appName);
+            let win = document.getElementById(windowId);
+
             
-            title.innerText = appName;
-            frame.src = appUrl;
-            win.style.display = 'flex';
+            if (win) {
+                if (win.classList.contains('minimized')) {
+                    win.classList.remove('minimized');
+                }
+                bringToFront(windowId);
+                return;
+            }
+
+            
+            const container = document.getElementById('window-container');
+            win = document.createElement('div');
+            win.className = 'os-window';
+            win.id = windowId;
+
+            // Cascade initial window positions
+            const initialTop = 80 + (windowCascadeOffset * 30);
+            const initialLeft = 80 + (windowCascadeOffset * 30);
+            windowCascadeOffset = (windowCascadeOffset + 1) % 8;
+
+            win.style.top = initialTop + 'px';
+            win.style.left = initialLeft + 'px';
+
+            win.innerHTML = `
+                <div class="titlebar" onmousedown="bringToFront('${windowId}')">
+                    <span>Rishi ${appName}</span>
+                    <div class="win-btns">
+                        <button class="win-btn" title="Minimize" onclick="minimizeApp('${windowId}')">—</button>
+                        <button class="win-btn" title="Maximize" onclick="maximizeApp('${windowId}')">□</button>
+                        <button class="win-btn close" title="Close" onclick="closeApp('${windowId}')">✕</button>
+                    </div>
+                </div>
+                <iframe src="${appUrl}" title="${appName}"></iframe>
+            `;
+
+            win.addEventListener('mousedown', () => bringToFront(windowId));
+            container.appendChild(win);
+
+            windowStates[windowId] = {
+                isMaximized: false,
+                top: win.style.top,
+                left: win.style.left,
+                width: '450px',
+                height: '550px'
+            };
+
+            makeDraggable(win);
+            bringToFront(windowId);
+            updateTaskbarActiveState(appName, true);
         }
 
-        function closeApp() {
-            const win = document.getElementById('calc-window');
-            const frame = document.getElementById('calc-frame');
-            
-            win.style.display = 'none';
-            frame.src = ''; 
+        function bringToFront(windowId) {
+            const win = document.getElementById(windowId);
+            if (!win) return;
+
+            highestZIndex++;
+            win.style.zIndex = highestZIndex;
+
+            document.querySelectorAll('.os-window').forEach(w => w.classList.remove('active-window'));
+            win.classList.add('active-window');
         }
 
-        function maximizeApp() {
-            const win = document.getElementById('calc-window');
-            if (!isMaximized) {
-                originalCoords.top = win.style.top;
-                originalCoords.left = win.style.left;
-                originalCoords.width = win.style.width;
-                originalCoords.height = win.style.height;
-
-                win.style.top = '0px';
-                win.style.left = '0px';
-                win.style.width = '100vw';
-                win.style.height = 'calc(100vh - 48px)';
-                isMaximized = true;
-            } else {
-                win.style.top = originalCoords.top || '120px';
-                win.style.left = originalCoords.left || '120px';
-                win.style.width = originalCoords.width || '450px';
-                win.style.height = originalCoords.height || '550px';
-                isMaximized = false;
+        function closeApp(windowId) {
+            const win = document.getElementById(windowId);
+            if (win) {
+                const appName = win.querySelector('.titlebar span').innerText.replace('Rishi ', '');
+                win.remove();
+                delete windowStates[windowId];
+                updateTaskbarActiveState(appName, false);
             }
         }
 
-        function minimizeApp() {
-            const win = document.getElementById('calc-window');
-            win.style.display = 'none';
+        function maximizeApp(windowId) {
+            const win = document.getElementById(windowId);
+            const state = windowStates[windowId];
+            if (!win || !state) return;
+
+            if (!state.isMaximized) {
+                state.top = win.style.top;
+                state.left = win.style.left;
+                state.width = win.style.width;
+                state.height = win.style.height;
+
+                win.classList.add('maximized');
+                state.isMaximized = true;
+            } else {
+                win.classList.remove('maximized');
+                win.style.top = state.top;
+                win.style.left = state.left;
+                win.style.width = state.width;
+                win.style.height = state.height;
+                state.isMaximized = false;
+            }
         }
 
-       
+        function minimizeApp(windowId) {
+            const win = document.getElementById(windowId);
+            if (win) {
+                win.classList.add('minimized');
+            }
+        }
+
+        function updateTaskbarActiveState(appName, isOpen) {
+            const cleanName = appName.replace(/\s+/g, '-').toLowerCase();
+            const tbBtn = document.getElementById('tb-' + cleanName);
+            if (tbBtn) {
+                if (isOpen) {
+                    tbBtn.classList.add('active');
+                } else {
+                    tbBtn.classList.remove('active');
+                }
+            }
+        }
+
+        function makeDraggable(win) {
+            const titlebar = win.querySelector('.titlebar');
+            let isDragging = false;
+            let startX, startY, initialLeft, initialTop;
+
+            titlebar.addEventListener('mousedown', (e) => {
+                if (e.target.tagName === 'BUTTON' || win.classList.contains('maximized')) return;
+                
+                isDragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                initialLeft = win.offsetLeft;
+                initialTop = win.offsetTop;
+
+                // Prevent iframe mouse capture during drag
+                document.querySelectorAll('iframe').forEach(iframe => iframe.style.pointerEvents = 'none');
+
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+
+            function onMouseMove(e) {
+                if (!isDragging) return;
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+
+                win.style.left = `${initialLeft + dx}px`;
+                win.style.top = `${initialTop + dy}px`;
+            }
+
+            function onMouseUp() {
+                isDragging = false;
+                document.querySelectorAll('iframe').forEach(iframe => iframe.style.pointerEvents = 'auto');
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            }
+        }
+
         function updateTaskbarClock() {
             const now = new Date();
             const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
