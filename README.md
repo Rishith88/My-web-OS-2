@@ -73,5 +73,14 @@ Thats it.
 - Click CountDown timer icon to set a time and it counts down to 00:00:00
 - Drag window from top blue/black bar to move it
 - Use - button to minimize, square button to maximize, X to close
+## Visuals
+<img width="949" height="401" alt="image" src="https://github.com/user-attachments/assets/aeca35d0-40bd-49d3-959c-02316d28eda0" />
+<img width="952" height="416" alt="image" src="https://github.com/user-attachments/assets/cb36ce0d-a19f-4a5d-a877-11e21b51a900" />
+<img width="948" height="434" alt="image" src="https://github.com/user-attachments/assets/9477bcd4-4c53-4d16-9bdd-078a50bed04a" />
+<img width="956" height="440" alt="image" src="https://github.com/user-attachments/assets/a1fae79f-d1da-43be-ac64-ce52e36e4db2" />
+
+
+
+
 
 Made by Rishi for learning purpose. Still learning JS so code is not perfect.
